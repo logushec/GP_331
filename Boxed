@@ -1,0 +1,18 @@
+package GroupProject;
+
+public class Boxed extends Item {
+    public String description;
+    
+    public Boxed (String itemName, String itemDescription, double itemCost,
+            double itemRetail, int itemQty, String itemCategory) {
+        super(itemName, itemDescription, itemCost, itemRetail, itemQty);
+        this.description = itemCategory;
+    }
+    
+    public String toString() {
+        //print the description of the relevant object
+        String printDescription = "";
+        printDescription += "ID #: " + super.itemID + "  " + super.itemName + "  $" + super.itemCost + " " + this.itemCategory + "  " + super.itemQty;
+        return printDescription;
+    }
+}
