@@ -1,0 +1,78 @@
+package GroupProject;
+public class Item {
+    
+    public static String[] categoryDescriptions;
+    public static Item[] inventory = new Item[10000];
+    public static int inventoryCount = 0;
+    public String itemCategory;
+    public double itemCost;
+    public String itemDescription;
+    public int itemID;
+    public String itemName;
+    public int itemQty;
+    public double itemRetail;
+    public static int nextID = 0;
+    
+    public Item(String itemName, String itemDescription, double itemCost, double itemRetail, int itemQty)
+    {
+        //set values to the relevant Item object
+        this.itemCost = itemCost;
+        this.itemDescription = itemDescription;
+        this.itemName = itemName;
+        this.itemRetail = itemRetail;
+        this.itemCategory = itemCategory;
+        this.itemQty = itemQty;
+        inventoryCount += itemQty; //increase the num in inventory based upon 
+        this.itemID  = nextID;
+    }
+    
+    public static void addToInventory(Item inventoryItem)
+    {
+        //if there is room in array
+        inventory[nextID] = inventoryItem;
+        nextID++;
+    }
+    
+    public String toString() {
+        return "I am an item";
+    }
+    
+    public double getItemCost()
+    {
+        return this.itemCost;
+    }
+    
+    public double getItemRetail()
+    {
+        return this.itemRetail;
+    }
+    
+    public String printItemDescription()
+    {
+        //print the description of the relevant object
+        String printDescription = "";
+        //printDescription += "ID #: " + this.itemID + "  " + this.itemName + "  $" + this.itemCost + " " + generateCategoryString(this.itemCategory) + "  " + this.itemQty;
+        return printDescription;
+    }
+    
+    public void setItemCost(double itemCost)
+    {
+        this.itemCost = itemCost;
+    }
+    
+    public void setItemName(String itemName)
+    {
+        this.itemName = itemName;
+    }
+    
+    public void setItemQty(int itemQty)
+    {
+        this.itemQty = itemQty; //this needs more code to update the amount of total we have in inventory
+    }
+    
+    public void setItemRetail(double itemRetail)
+    {
+        this.itemRetail = itemRetail;
+    }
+    
+}
