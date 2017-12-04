@@ -1,3 +1,4 @@
+
 package GroupProject;
 
 public class Bagged extends Item {
@@ -5,15 +6,16 @@ public class Bagged extends Item {
     
     public Bagged (String itemName, String itemDescription, double itemCost,
             double itemRetail, int itemQty, String itemCategory) {
-        super(itemName, itemDescription, itemCost, itemRetail, itemQty);
-        this.description = itemCategory;
+        super(itemName, itemDescription, itemCost, itemRetail, itemCategory, itemQty);
+        this.description = "Bagged";
     }
     
     public String toString() {
         //print the description of the relevant object
         String printDescription = "";
-        printDescription += "ID #: " + super.itemID + "  " + super.itemName + "  $" + super.itemCost + " " + this.itemCategory + "  " + super.itemQty;
+        printDescription += this.description + " ";
         return printDescription;
     }
     
 }
+
