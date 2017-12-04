@@ -1,4 +1,3 @@
-
 package GroupProject;
 
 public class Canned extends Item {
@@ -6,14 +5,14 @@ public class Canned extends Item {
     
     public Canned (String itemName, String itemDescription, double itemCost,
             double itemRetail, int itemQty, String itemCategory) {
-        super(itemName, itemDescription, itemCost, itemRetail, itemQty);
-        this.description = itemCategory;
+        super(itemName, itemDescription, itemCost, itemRetail, itemCategory, itemQty);
+        this.description = "Canned";
     }
     
     public String toString() {
         //print the description of the relevant object
         String printDescription = "";
-        printDescription += "ID #: " + super.itemID + "  " + super.itemName + "  $" + super.itemCost + " " + this.itemCategory + "  " + super.itemQty;
+        printDescription += this.description + " ";
         return printDescription;
     }
     
