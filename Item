@@ -1,78 +1,399 @@
 package GroupProject;
-public class Item {
+
+import java.util.InputMismatchException;
+import java.util.Scanner;
+import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.*;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
+//found on stack overflow
+import javax.swing.JOptionPane;
+import javafx.scene.image.*;
+import javafx.scene.text.*;
+import javafx.stage.Stage;
+
+public class ProtoGroceryUI extends Application {
+    static TextArea txtAddResult = new TextArea("");
+    static TextArea txtInv = new TextArea("");
     
-    public static String[] categoryDescriptions;
-    public static Item[] inventory = new Item[10000];
-    public static int inventoryCount = 0;
-    public String itemCategory;
-    public double itemCost;
-    public String itemDescription;
-    public int itemID;
-    public String itemName;
-    public int itemQty;
-    public double itemRetail;
-    public static int nextID = 0;
+    @Override
+    public void start(Stage primaryStage) {
+        //Declare Controls
+        Image image = new Image("http://www.pvhc.net/img238/kryasxggwxndlravhbwo.png", 100, 100, false, false);
+        ImageView grocery = new ImageView(image);
+        Label lblTitle = new Label("Welcome to PG BagIt!");
+        lblTitle.setFont(Font.font("AR BONNIE", FontWeight.BOLD, FontPosture.ITALIC, 40));
+        lblTitle.setWrapText(true);
+        Label lblItem = new Label("Enter Item Details");
+        Label lblName = new Label("Item Name: ");
+        TextField txtName = new TextField("");
+        Label lblDesc = new Label("Item Description: ");
+        TextField txtDesc = new TextField("");
+        Label lblCost = new Label("Item Cost: ");
+        TextField txtCost = new TextField("");
+        Label lblSell = new Label("Sell for Cost: ");
+        TextField txtSell = new TextField("");
+        TextField txtQuantity = new TextField("");
+        Label lblEdit = new Label("Enter ID Number of Item to Edit: ");
+        TextField txtEdit = new TextField("");
+        TextArea txtCatResult = new TextArea("");
+        TextArea txtResult = new TextArea("");
+
+        //Result Controls
+        Button btnSubmit = new Button("Submit");
+        ComboBox<String> cboMenuChoice = new ComboBox<>();
+        cboMenuChoice.getItems().addAll("Add - Add an inventory item", "Edit - Edit an inventory item", "PrintC - Print all items in a Category", "PrintAll - Print all items", "Quit - Exit Program");
+        cboMenuChoice.setPromptText("Add - Add an inventory item");
+        cboMenuChoice.setEditable(false);  
+        
+        ComboBox<String> cboTest = new ComboBox<>();
+        cboTest.getItems().addAll("1 ‐ Produce", "2 ‐ Meats/Dairy", "3 ‐ Canned", "4 ‐ Boxed", "5 ‐ Bagged");
+
+        ComboBox<String> cboCategory = new ComboBox<>();
+        cboCategory.getItems().addAll("1 ‐ Produce", "2 ‐ Meats/Dairy", "3 ‐ Canned", "4 ‐ Boxed", "5 ‐ Bagged");
+        
+        //Declare Menu Pane Structures
+        GridPane pane = new GridPane();
+        pane.setAlignment(Pos.TOP_LEFT);
+        pane.setPadding(new Insets(20, 0, 15, 20));
+        pane.setHgap(20);
+        pane.setVgap(20);
+        //Add variables for Add Option pane
+        pane.add(grocery, 0, 0);
+        pane.add(lblTitle, 2, 0, 1, 1);
+        pane.add(new Label("Please select an option: "), 0, 1, 3, 1);
+        pane.add(cboMenuChoice, 2, 1);
+
+        //Declare rootPane - found on StackOverflow
+        GridPane rootPane = new GridPane();
+        GridPane protoPane = new GridPane();
+        protoPane.add(pane, 0, 0);
+
+        Stage secondaryStage = new Stage();
+        GridPane secondaryPane = new GridPane();
+        secondaryPane.setAlignment(Pos.TOP_LEFT);
+
+        //Declare pane for Add Option
+        GridPane addPane = new GridPane();
+        addPane.setAlignment(Pos.TOP_LEFT);
+        addPane.setPadding(new Insets(0, 20, 0, 20));
+        addPane.setHgap(10);
+        addPane.setVgap(10);
+            //Add variables for Add Option pane
+            lblItem.setFont(Font.font("Times New Roman", FontWeight.BOLD, FontPosture.ITALIC, 12));
+            addPane.add(lblItem, 0, 0);
+            addPane.add(new Label("        "), 1, 0);
+            addPane.add(new Label("Item Name: "), 0, 1);
+            addPane.add(txtName, 2, 1);
+            addPane.add(new Label("Item Description: "), 0, 2);
+            addPane.add(txtDesc, 2, 2);
+            addPane.add(new Label("Item Cost: "), 0, 3);
+            addPane.add(txtCost, 2, 3);
+            addPane.add(new Label("Sell for Cost: "), 0, 4);
+            addPane.add(txtSell, 2, 4);
+            addPane.add(new Label("Item Category: "), 0, 5);
+            addPane.add(cboTest, 2, 5);
+            addPane.add(new Label("Item Quantity: "), 0, 6);
+            addPane.add(txtQuantity, 2, 6);
+             addPane.add(btnSubmit, 2, 7);
+            addPane.add(txtAddResult, 0, 8, 3, 1);
+
+        //Declare pane for Edit Option
+        GridPane editPane = new GridPane();
+        editPane.setAlignment(Pos.TOP_RIGHT);
+        editPane.setPadding(new Insets(0, 20, 0, 20));
+        editPane.setHgap(20);
+        editPane.setVgap(20);
+        editPane.add(txtInv, 0, 0, 2, 1);
+        editPane.add(lblEdit, 0, 1);
+        editPane.add(txtEdit, 1, 1);
+            editPane.add(new Label("Item Name: "), 0, 2);
+            TextField txtEditName = new TextField("");
+            editPane.add(txtEditName, 1, 2);
+            editPane.add(new Label("Item Description: "), 0, 3);
+            TextField txtEditDesc = new TextField("");
+            editPane.add(txtEditDesc, 1, 3);
+            editPane.add(new Label("Item Cost: "), 0, 4);
+            TextField txtEditCost = new TextField("");
+            editPane.add(txtEditCost, 1, 4);
+            editPane.add(new Label("Sell for Cost: "), 0, 5);
+            TextField txtEditSell = new TextField("");
+            editPane.add(txtEditSell, 1, 5);
+            editPane.add(new Label("Item Category: "), 0, 6);
+            ComboBox<String> cboEditTest = new ComboBox<>();
+            cboEditTest.getItems().addAll("1 ‐ Produce", "2 ‐ Meats/Dairy", "3 ‐ Canned", "4 ‐ Boxed", "5 ‐ Bagged");
+            editPane.add(cboEditTest, 1, 6);
+            editPane.add(new Label("Item Quantity: "), 0, 7);
+            TextField txtEditQuantity = new TextField("");
+            editPane.add(txtEditQuantity, 1, 7);
+            Button btnEdit = new Button("Submit Changes");
+            editPane.add(btnEdit, 1, 8);
+            TextArea txtEditResult = new TextArea("");
+            editPane.add(txtEditResult, 0, 9, 3, 1);
+        
+
+        //root pane controls
+        Image imageRoot = new Image("http://www.pvhc.net/img238/kryasxggwxndlravhbwo.png", 100, 100, false, false);
+        ImageView groceryRoot = new ImageView(image);
+        Label lblTitleRoot = new Label("Welcome to ProtoGrocery 2.0!");
+        lblTitleRoot.setFont(Font.font("AR BONNIE", FontWeight.BOLD, FontPosture.ITALIC, 40));
+        lblTitleRoot.setWrapText(true);
+        rootPane.add(groceryRoot, 0, 0);
+        rootPane.add(lblTitleRoot, 1, 0, 1, 1);
+        
+        //Declare pane for Print Categories Option
+        GridPane printCPane = new GridPane();
+        printCPane.setAlignment(Pos.TOP_LEFT);
+        printCPane.setPadding(new Insets(20, 20, 20, 40));
+        printCPane.setHgap(10);
+        printCPane.setVgap(10);
+        printCPane.add(new Label("Please select a category: "), 0, 0);
+        printCPane.add(cboCategory, 1, 0);
+        printCPane.add(txtCatResult, 0, 1, 2, 1);
+
+        //Declare pane for Print All Option
+        GridPane printAllPane = new GridPane();
+        printAllPane.setAlignment(Pos.TOP_RIGHT);
+        printAllPane.setPadding(new Insets(20, 20, 20, 40));
+        printAllPane.setHgap(10);
+        printAllPane.setVgap(10);
+        printAllPane.add(txtResult, 0, 0, 2, 1);
+        protoPane.add(addPane, 0, 1);
+        Scene scene = new Scene(protoPane, 450, 450);
+        
+        Scene secondaryScene = new Scene(rootPane, 600, 400);
+        secondaryStage.setScene(secondaryScene);
+        secondaryStage.setTitle("ProtoGrocery 2.0 Inventory");
+        
+        cboMenuChoice.setOnAction(e -> {
+            String choice = cboMenuChoice.getValue();
+            switch (choice) {
+                case "PrintC - Print all items in a Category":
+                case "PrintAll - Print all items":
+                    secondaryStage.show();
+                    break;
+            }
+            switch (choice) {
+                case "Add - Add an inventory item":
+                    protoPane.getChildren().remove(addPane);
+                    protoPane.getChildren().remove(editPane);
+                    protoPane.add(addPane, 0, 1);
+                    break;
+                case "Edit - Edit an inventory item":
+                    protoPane.getChildren().remove(addPane);
+                    protoPane.getChildren().remove(editPane);
+                    protoPane.add(editPane, 0, 1);
+                    editItem();
+                    break;
+                case "PrintC - Print all items in a Category":
+                    rootPane.getChildren().remove(printCPane);
+                    rootPane.getChildren().remove(printAllPane);
+                    rootPane.add(printCPane, 0, 1);
+                    String cat = cboCategory.getValue();
+                    cboCategory.setOnAction (d -> {
+                        txtCatResult.setText(printC(cat));
+                    });
+                    break;
+                case "PrintAll - Print all items":
+                    rootPane.getChildren().remove(printCPane);
+                    rootPane.getChildren().remove(printAllPane);
+                    rootPane.add(printAllPane, 0, 1);
+                    txtResult.setText(printAll());
+                    break;
+                case "Quit - Exit Program":
+                    primaryStage.hide();
+                    secondaryStage.hide();
+                    break;
+            }
+        });
+        
+        //inside the add pane on submit
+        btnSubmit.setOnAction(f -> {
+            String name = txtName.getText();
+            String description = txtDesc.getText();
+            Double cost = Double.parseDouble(txtCost.getText());
+            Double sell = Double.parseDouble(txtSell.getText());
+            String category = cboTest.getValue();
+            Integer quantity = Integer.parseInt(txtQuantity.getText());
+            addItem(name, description, cost, sell, category, quantity); //call add item method
+
+            //reset fields
+            txtName.setText("");
+            txtDesc.setText("");
+            txtCost.setText("");
+            txtSell.setText("");
+            cboTest.setPromptText("");
+            txtQuantity.setText("");
+        });
+        
+        primaryStage.setTitle("Welcome to ProtoGrocery 2.0");
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+    public static String printC(String cat) {
+        String print = "";
+        //based on category choice print items for that specific category
+        switch(cat) {
+            case "1 ‐ Produce":
+                print =  "Produce: \n";
+                break;
+            case "2 ‐ Meats/Dairy":
+                print = "Meats/Dairy: ";
+                break;
+            case "3 ‐ Canned":
+                print = "Canned";
+                break;
+            case "4 ‐ Boxed":
+                print = "Boxed"; 
+                break;
+            case "5 ‐ Bagged":
+                print = "Bagged";
+                break;
+        } 
+        //run through array and print items from respective category 
+        for (int p = 0; p < Item.itemList.size(); p++)
+        {
+            if (Item.itemList.get(p) == null)
+            {
+                break;   
+            }
+            else if (Item.itemList.get(p).category == cat)
+                print += (Item.itemList.get(p).toString());  
+        }
+        print += ("\n-------------------");
+        return print;
+    }
     
-    public Item(String itemName, String itemDescription, double itemCost, double itemRetail, int itemQty)
+    public static String printAll() 
+    {   
+        String print = "";
+        for (int i=0; i<=6; i++)
+        {
+            String a = "";
+            switch (i)
+            //print line for categories then print item based on "a" which is the category number
+            {   
+                case 1: 
+                    a = "1 ‐ Produce";
+                    print = ("Produce: \n"); 
+                    break;
+                case 2:
+                    a = "2 ‐ Meats/Dairy";
+                    print += ("-------------------\n");
+                    print += ("Meats/Dairy: \n");
+                    break;
+                case 3: 
+                    a = "3 ‐ Canned";
+                    print += ("-------------------\n");
+                    print += ("Canned: \n");
+                    break;
+                case 4: 
+                    a = "4 ‐ Boxed";
+                    print += ("-------------------\n");
+                    print += ("Boxed: \n");
+                    break;
+                case 5: 
+                    a = "5 ‐ Bagged";
+                    print += ("-------------------\n");
+                    print += ("Bagged: \n");
+                    break;
+                case 6:
+                    print += ("-------------------\n");
+                    break;
+            }
+            //run through array and print all items to respective category 
+            for (int p = 0; p < Item.itemList.size(); p++)
+            {
+                if (Item.itemList.get(p) == null)
+                {                
+                    break;
+                }
+                else if (Item.itemList.get(p).category == a)
+                {
+                    print += (Item.itemList.get(p).toString());
+                   
+                }   
+            } 
+        }return print;
+    }
+    
+    public static void editItem()
     {
-        //set values to the relevant Item object
-        this.itemCost = itemCost;
-        this.itemDescription = itemDescription;
-        this.itemName = itemName;
-        this.itemRetail = itemRetail;
-        this.itemCategory = itemCategory;
-        this.itemQty = itemQty;
-        inventoryCount += itemQty; //increase the num in inventory based upon 
-        this.itemID  = nextID;
+        txtInv.setText(printAll());
     }
-    
-    public static void addToInventory(Item inventoryItem)
+//        int itemID = 0;
+        //Check that id number entered is an int
+//        while (true) {
+//            try {
+//                System.out.print("Enter ID Number of Item to Edit: ");
+//                itemID = in.nextInt();
+//                break;
+//            } catch (InputMismatchException e) {
+//                System.out.println("Please enter a Valid ID!");
+//                in.next();
+//                continue;
+//            }
+//        }
+//       
+//        System.out.println("");
+//        System.out.println("Enter Item Details: ");
+//        //Allow user to enter name
+//        System.out.print("Item Name: ");
+//        Item.inventory[itemID].itemName = scan.nextLine();      
+//        
+//        //Allow user to enter description
+//        System.out.print("Item Description: ");
+//        //currently there is no set item description setter
+//        Item.inventory[itemID].itemDescription = scan.nextLine();
+//        
+//        //Allow user to enter cost
+//        System.out.print("Item Cost: ");
+//        Item.inventory[itemID].setItemCost(in.nextDouble());
+//        
+//        //Allow user to enter sell cost
+//        System.out.print("Sell for Cost: ");
+//        Item.inventory[itemID].setItemRetail(in.nextDouble());
+//        
+//        //Display category choices
+//        System.out.println("Item Category: ");
+//        System.out.println("1 - Produce");
+//        System.out.println("2 - Meats/Dairy");
+//        System.out.println("3 - Canned");
+//        System.out.println("4 - Boxed");
+//        System.out.println("5 - Bagged");
+//        System.out.print("Choice: ");        
+////        Item.inventory[itemID].setItemCategory(in.nextInt());
+//        
+//        System.out.print("Item Quantity: ");
+//        Item.inventory[itemID].setItemQty(in.nextInt());
+//    }
+//    
+    public static void addItem(String itemName, String itemDescription, double itemCost, double itemRetail, String itemCategory, int itemQty)
     {
-        //if there is room in array
-        inventory[nextID] = inventoryItem;
-        nextID++;
+        //add new item to item class
+        switch(itemCategory) {
+            case "1 ‐ Produce":
+                txtAddResult.setText(Item.addToInventory(new Produce(itemName, itemDescription, itemCost, itemRetail, itemQty, itemCategory)));      
+            case "2 ‐ Meats/Dairy":
+                txtAddResult.setText(Item.addToInventory(new MeatDairy(itemName, itemDescription, itemCost, itemRetail, itemQty, itemCategory)));      
+            case "3 ‐ Canned":
+                txtAddResult.setText(Item.addToInventory(new Canned(itemName, itemDescription, itemCost, itemRetail, itemQty, itemCategory)));      
+            case "4 ‐ Boxed":
+                txtAddResult.setText(Item.addToInventory(new Boxed(itemName, itemDescription, itemCost, itemRetail, itemQty, itemCategory)));      
+            case "5 ‐ Bagged":
+                txtAddResult.setText(Item.addToInventory(new Bagged(itemName, itemDescription, itemCost, itemRetail, itemQty, itemCategory)));      
+        } 
     }
     
-    public String toString() {
-        return "I am an item";
+    public static void print(Item item) {
+        //txtAddResult.setText("Added: " + item.toString());
     }
-    
-    public double getItemCost()
-    {
-        return this.itemCost;
+
+    public static void main(String[] args) {
+        launch(args);
     }
-    
-    public double getItemRetail()
-    {
-        return this.itemRetail;
-    }
-    
-    public String printItemDescription()
-    {
-        //print the description of the relevant object
-        String printDescription = "";
-        //printDescription += "ID #: " + this.itemID + "  " + this.itemName + "  $" + this.itemCost + " " + generateCategoryString(this.itemCategory) + "  " + this.itemQty;
-        return printDescription;
-    }
-    
-    public void setItemCost(double itemCost)
-    {
-        this.itemCost = itemCost;
-    }
-    
-    public void setItemName(String itemName)
-    {
-        this.itemName = itemName;
-    }
-    
-    public void setItemQty(int itemQty)
-    {
-        this.itemQty = itemQty; //this needs more code to update the amount of total we have in inventory
-    }
-    
-    public void setItemRetail(double itemRetail)
-    {
-        this.itemRetail = itemRetail;
-    }
-    
+
 }
