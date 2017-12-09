@@ -1,0 +1,8 @@
+    public void UpdateItem(int txtEdit, String txtEditName, String txtEditDesc, Double txtEditCost, Double txtEditSell, int txtEditQuantity ){
+    String sqlQuery = "UPDATE SYSTEM.INVENTORYUI SET ITEMNAME =\' "
+    + txtEditName + "\'" + "," + "ITEMDESC=\'" + txtEditDesc + "\'" + "," + "ITEMCOST=\'" + txtEditCost + "\'" + ","
+            + "ITEMSELL=\'" + txtEditSell + "\'" + "," + "ITEMQTY=\'" + txtEditQuantity
+            + "\'" + "WHERE ITEMID=\'" + txtEdit + "\'";
+    sendDBCommand(sqlQuery);
+    
+    }
